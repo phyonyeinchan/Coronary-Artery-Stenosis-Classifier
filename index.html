@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coronary Artery Stenosis Classifier | Clinical Decision Support</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-heart-pulse"></i>
+                <h1>CASC <span>System</span></h1>
+            </div>
+            <div class="header-meta">
+                <span class="badge">EHR-Integrated View</span>
+                <span class="user-profile"><i class="fa-regular fa-user-doctor"></i> Dr. Phyo Nyein Chan</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <div class="dashboard-header">
+            <h2>Coronary Artery Stenosis Classifier</h2>
+            <p>Predictive model for >50% diameter stenosis based on the UCI Cleveland Dataset parameters.</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Left Column: Input Form -->
+            <section class="panel input-panel">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-clipboard-user"></i> Patient Clinical Data</h3>
+                    <button type="button" id="fill-demo-btn" class="btn btn-outline btn-sm">Fill Demo Data</button>
+                </div>
+                
+                <form id="clinical-form">
+                    <!-- Group 1: Demographics -->
+                    <div class="form-group-section">
+                        <h4>Demographics & Vitals</h4>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="age">Age (Years)</label>
+                                <input type="number" id="age" name="age" min="20" max="100" required placeholder="e.g. 55">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="sex">Biological Sex</label>
+                                <select id="sex" name="sex" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="1">Male</option>
+                                    <option value="0">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="trestbps">Resting BP (mmHg)</label>
+                                <input type="number" id="trestbps" name="trestbps" min="80" max="220" required placeholder="e.g. 130">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="chol">Serum Cholesterol (mg/dl)</label>
+                                <input type="number" id="chol" name="chol" min="100" max="600" required placeholder="e.g. 250">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <label for="fbs">Fasting Blood Sugar > 120 mg/dl?</label>
+                                <select id="fbs" name="fbs" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="1">Yes (True)</option>
+                                    <option value="0">No (False)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 2: Symptoms & ECG -->
+                    <div class="form-group-section">
+                        <h4>Symptoms & Electrocardiography</h4>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <label for="cp">Chest Pain Type</label>
+                                <select id="cp" name="cp" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="1">Typical Angina</option>
+                                    <option value="2">Atypical Angina</option>
+                                    <option value="3">Non-anginal Pain</option>
+                                    <option value="4">Asymptomatic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <label for="restecg">Resting ECG Results</label>
+                                <select id="restecg" name="restecg" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="0">Normal</option>
+                                    <option value="1">ST-T Wave Abnormality</option>
+                                    <option value="2">Left Ventricular Hypertrophy (Estes)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 3: Exercise Tests -->
+                    <div class="form-group-section">
+                        <h4>Exercise Stress Test</h4>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="thalach">Max Heart Rate Achieved</label>
+                                <input type="number" id="thalach" name="thalach" min="60" max="220" required placeholder="e.g. 150">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="exang">Exercise Induced Angina?</label>
+                                <select id="exang" name="exang" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="oldpeak">ST Depression (vs Rest)</label>
+                                <input type="number" id="oldpeak" name="oldpeak" step="0.1" min="0" max="10" required placeholder="e.g. 1.5">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="slope">Slope of Peak ST Segment</label>
+                                <select id="slope" name="slope" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="1">Upsloping</option>
+                                    <option value="2">Flat</option>
+                                    <option value="3">Downsloping</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 4: Imaging / Proxy -->
+                    <div class="form-group-section">
+                        <h4>Imaging Proxies</h4>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="ca">Major Vessels Colored (Fluoroscopy)</label>
+                                <select id="ca" name="ca" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="thal">Thallium Scintigraphy</label>
+                                <select id="thal" name="thal" required>
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="3">Normal</option>
+                                    <option value="6">Fixed Defect</option>
+                                    <option value="7">Reversible Defect</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-secondary">Clear</button>
+                        <button type="submit" class="btn btn-primary" id="predict-btn">
+                            <i class="fa-solid fa-microchip"></i> Run Classifier Model
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Right Column: Results & Analysis -->
+            <section class="panel results-panel">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-chart-line"></i> Risk Analysis Report</h3>
+                </div>
+
+                <div id="loading-state" class="hidden">
+                    <div class="spinner"></div>
+                    <p>Analyzing clinical features...</p>
+                </div>
+
+                <div id="empty-state" class="empty-state">
+                    <i class="fa-solid fa-file-medical text-muted"></i>
+                    <p>Input patient data and run the classifier to see the risk analysis report.</p>
+                </div>
+
+                <div id="results-content" class="hidden">
+                    <div class="risk-score-card">
+                        <div class="risk-header">
+                            <h4>Probability of >50% Stenosis</h4>
+                            <span id="risk-badge" class="badge-risk high">High Risk</span>
+                        </div>
+                        <div class="risk-dial">
+                            <div class="dial-circle">
+                                <span id="risk-percentage">78%</span>
+                            </div>
+                        </div>
+                        <p id="clinical-summary" class="summary-text">
+                            Patient exhibits significant indicators associated with coronary artery disease.
+                        </p>
+                    </div>
+
+                    <div class="key-factors">
+                        <h4>Key Contributing Factors</h4>
+                        <ul id="factors-list" class="factors-list">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+
+                    <div class="recommendations">
+                        <h4>Clinical Recommendations</h4>
+                        <ul id="recs-list" class="recs-list">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Built for educational and research purposes. Does not replace professional medical judgment.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
