@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('clinical-form');
     const demoBtn = document.getElementById('fill-demo-btn');
-    
+
     // UI Elements for Results
     const emptyState = document.getElementById('empty-state');
     const loadingState = document.getElementById('loading-state');
     const resultsContent = document.getElementById('results-content');
-    
+
     const riskPercentage = document.getElementById('risk-percentage');
     const riskBadge = document.getElementById('risk-badge');
     const clinicalSummary = document.getElementById('clinical-summary');
@@ -33,12 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         // Hide empty state and show loading
         emptyState.classList.add('hidden');
         resultsContent.classList.add('hidden');
         loadingState.classList.remove('hidden');
-        
+
         // Gather data
         const formData = new FormData(form);
         const features = {
@@ -72,38 +72,38 @@ document.addEventListener('DOMContentLoaded', () => {
         let recs = [];
 
         // Age & Sex
-        if (f.age > 60) { score += 10; factors.push({text: "Advanced Age (>60 yrs)", type: "warning"}); }
-        if (f.sex === 1) { score += 10; factors.push({text: "Male biological sex is a baseline risk factor", type: "warning"}); }
+        if (f.age > 60) { score += 10; factors.push({ text: "Advanced Age (>60 yrs)", type: "warning" }); }
+        if (f.sex === 1) { score += 10; factors.push({ text: "Male biological sex is a baseline risk factor", type: "warning" }); }
 
         // Chest Pain
-        if (f.cp === 4) { 
-            score += 25; factors.push({text: "Asymptomatic pattern with other indicators", type: "critical"}); 
+        if (f.cp === 4) {
+            score += 25; factors.push({ text: "Asymptomatic pattern with other indicators", type: "critical" });
         } else if (f.cp === 1 || f.cp === 2) {
-            score += 15; factors.push({text: "Presence of Angina (Typical/Atypical)", type: "critical"});
+            score += 15; factors.push({ text: "Presence of Angina (Typical/Atypical)", type: "critical" });
         } else {
-            factors.push({text: "Non-anginal chest pain", type: "good"});
+            factors.push({ text: "Non-anginal chest pain", type: "good" });
         }
 
         // Vitals / Labs
-        if (f.trestbps > 140) { score += 10; factors.push({text: `Elevated resting BP (${f.trestbps} mmHg)`, type: "warning"}); }
-        if (f.chol > 240) { score += 10; factors.push({text: `High Serum Cholesterol (${f.chol} mg/dl)`, type: "warning"}); }
-        if (f.fbs === 1) { score += 5; factors.push({text: "Fasting Blood Sugar > 120 mg/dl", type: "warning"}); }
+        if (f.trestbps > 140) { score += 10; factors.push({ text: `Elevated resting BP (${f.trestbps} mmHg)`, type: "warning" }); }
+        if (f.chol > 240) { score += 10; factors.push({ text: `High Serum Cholesterol (${f.chol} mg/dl)`, type: "warning" }); }
+        if (f.fbs === 1) { score += 5; factors.push({ text: "Fasting Blood Sugar > 120 mg/dl", type: "warning" }); }
 
         // ECG / Exercise
-        if (f.restecg === 2) { score += 10; factors.push({text: "LVH detected on resting ECG", type: "warning"}); }
+        if (f.restecg === 2) { score += 10; factors.push({ text: "LVH detected on resting ECG", type: "warning" }); }
         if (f.thalach < 120 && f.age < 70) { score += 5; } // Low max heart rate
-        if (f.exang === 1) { score += 15; factors.push({text: "Exercise-induced angina present", type: "critical"}); }
-        
-        if (f.oldpeak > 2.0) { score += 15; factors.push({text: `Significant ST Depression (${f.oldpeak} mm)`, type: "critical"}); }
+        if (f.exang === 1) { score += 15; factors.push({ text: "Exercise-induced angina present", type: "critical" }); }
+
+        if (f.oldpeak > 2.0) { score += 15; factors.push({ text: `Significant ST Depression (${f.oldpeak} mm)`, type: "critical" }); }
         else if (f.oldpeak > 0) { score += 5; }
 
-        if (f.slope === 2) { score += 10; factors.push({text: "Flat peak exercise ST segment", type: "warning"}); }
-        else if (f.slope === 3) { score += 15; factors.push({text: "Downsloping peak exercise ST segment", type: "critical"}); }
+        if (f.slope === 2) { score += 10; factors.push({ text: "Flat peak exercise ST segment", type: "warning" }); }
+        else if (f.slope === 3) { score += 15; factors.push({ text: "Downsloping peak exercise ST segment", type: "critical" }); }
 
         // Fluoroscopy / Thallium
-        if (f.ca > 0) { score += (f.ca * 10); factors.push({text: `${f.ca} major vessel(s) colored by fluoroscopy`, type: "critical"}); }
-        if (f.thal === 6) { score += 15; factors.push({text: "Fixed defect on thallium scintigraphy", type: "warning"}); }
-        if (f.thal === 7) { score += 25; factors.push({text: "Reversible defect on thallium scintigraphy (Ischemia)", type: "critical"}); }
+        if (f.ca > 0) { score += (f.ca * 10); factors.push({ text: `${f.ca} major vessel(s) colored by fluoroscopy`, type: "critical" }); }
+        if (f.thal === 6) { score += 15; factors.push({ text: "Fixed defect on thallium scintigraphy", type: "warning" }); }
+        if (f.thal === 7) { score += 25; factors.push({ text: "Reversible defect on thallium scintigraphy (Ischemia)", type: "critical" }); }
 
         // Normalize score to percentage (0 - 99%)
         // The max possible proxy score above is ~175. We map it logarithmically/linearly to a probability.
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
             // Provide a good factor if empty
             if (!factors.some(f => f.type === 'good')) {
-                factors.push({text: "Most clinical parameters within normal limits.", type: "good"});
+                factors.push({ text: "Most clinical parameters within normal limits.", type: "good" });
             }
         }
 
@@ -156,10 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update Dial
         riskPercentage.textContent = `${result.probability}%`;
-        dialCircle.style.borderColor = 
-            result.category === 'high' ? 'var(--risk-high)' : 
-            result.category === 'moderate' ? 'var(--risk-moderate)' : 
-            'var(--risk-low)';
+        dialCircle.style.borderColor =
+            result.category === 'high' ? 'var(--risk-high)' :
+                result.category === 'moderate' ? 'var(--risk-moderate)' :
+                    'var(--risk-low)';
 
         // Update Badge
         riskBadge.textContent = result.category === 'high' ? 'High Risk' : result.category === 'moderate' ? 'Moderate Risk' : 'Low Risk';
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             li.innerHTML = `<i class="fa-solid fa-stethoscope"></i> <span>${r}</span>`;
             recsList.appendChild(li);
         });
-        
+
         // Scroll to results on mobile
         if (window.innerWidth < 1024) {
             document.querySelector('.results-panel').scrollIntoView({ behavior: 'smooth' });
