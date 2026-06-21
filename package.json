@@ -1,0 +1,22 @@
+{
+  "name": "coronary-artery-stenosis-classifier",
+  "version": "1.0.0",
+  "description": "Predictive model for coronary artery stenosis based on UCI Cleveland Dataset",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static HTML project - no build step required'",
+    "lint": "echo 'No linter configured for static HTML project'"
+  },
+  "keywords": [
+    "medical",
+    "machine-learning",
+    "coronary-artery",
+    "healthcare"
+  ],
+  "author": "Phyo Nyein Chan",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  }
+}
